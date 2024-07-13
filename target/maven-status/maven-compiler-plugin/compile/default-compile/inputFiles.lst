@@ -1,0 +1,15 @@
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\constants\Constants.java
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\domain\Phone.java
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\repository\PhoneRepository.java
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\repository\TelegramUserRepository.java
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\utils\MessageUtils.java
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\controller\BukharaTelefonBot.java
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\BukharatelefonbotApplication.java
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\controller\UpdateController.java
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\service\PhoneService.java
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\utils\BotInitializer.java
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\constants\TelegramUserStep.java
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\domain\TelegramUser.java
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\utils\BotConfig.java
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\utils\ReplyMarkupUtil.java
+D:\Projects\TelegramBot\bukharatelefonbot\src\main\java\uz\ikhtidev\bukharatelefonbot\service\TelegramUserService.java
