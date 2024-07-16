@@ -56,7 +56,7 @@ public class UpdateController {
         } else if (update.hasCallbackQuery()) {
             processCallbacks(update);
         } else {
-            log.error("Unsupported message type is received: " + update);
+            log.error("Unsupported message type is received: " + update.getMessage().getChatId());
         }
     }
 
