@@ -10,14 +10,14 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
-import uz.ikhtidev.bukharatelefonbot.constants.Constants;
-import uz.ikhtidev.bukharatelefonbot.constants.TelegramUserStep;
 import uz.ikhtidev.bukharatelefonbot.domain.Phone;
 import uz.ikhtidev.bukharatelefonbot.domain.TelegramUser;
 import uz.ikhtidev.bukharatelefonbot.service.PhoneService;
 import uz.ikhtidev.bukharatelefonbot.service.TelegramUserService;
+import uz.ikhtidev.bukharatelefonbot.utils.Constants;
 import uz.ikhtidev.bukharatelefonbot.utils.MessageUtils;
 import uz.ikhtidev.bukharatelefonbot.utils.ReplyMarkupUtil;
+import uz.ikhtidev.bukharatelefonbot.utils.TelegramUserStep;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,8 +55,6 @@ public class UpdateController {
             distributeMessagesByType(update);
         } else if (update.hasCallbackQuery()) {
             processCallbacks(update);
-        } else {
-            log.error("Unsupported message type is received: " + update.getMessage().getChatId());
         }
     }
 
@@ -78,6 +76,7 @@ public class UpdateController {
         String text = message.getText();
         TelegramUser user = getUser(message.getChatId());
         if (text.equals(TelegramUserStep.START)) {
+//            moderator
             if (Objects.equals(user.getChatId(), telegramBot.getBotModeratorId())) {
                 user.setFullName(message.getFrom().getFirstName());
                 user.setUserName(message.getFrom().getUserName());
@@ -88,7 +87,9 @@ public class UpdateController {
                 setView(sendMessage);
                 user.setStep(TelegramUserStep.ADMIN_FULL_ACCESS);
                 userService.saveUser(user);
-            } else if (!Objects.equals(user.getStep(), TelegramUserStep.WAITING_MODERATOR)) {
+            }
+//            user
+            else {
                 user.setFullName(message.getFrom().getFirstName());
                 user.setUserName(message.getFrom().getUserName());
                 var sendMessage = messageUtils.generateSendMessageWithText(message.getChatId(),
@@ -104,19 +105,17 @@ public class UpdateController {
                 user.setStep(TelegramUserStep.SELECT_CREATE_POST_OR_ADMIN);
                 userService.saveUser(user);
             }
-        }
-        else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_NAME)) {
+        } else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_NAME)) {
             Phone phone = getPhone(user.getChatId());
             phone.setName(text);
             phone.setOwnerUsername(user.getUserName());
             phoneService.savePhone(phone);
             var sendMessage = messageUtils.generateSendMessageWithText(message.getChatId(), "<b>Yaxshi!</b>\n" +
-                    "✅ Xotirasi (<i>Misol: 32 Gb</i>):");
+                    "✅ Xotirasi (<i>Misol: 32 gb</i>):");
             setView(sendMessage);
             user.setStep(TelegramUserStep.ENTER_PHONE_MEMORY);
             userService.saveUser(user);
-        }
-        else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_MEMORY)) {
+        } else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_MEMORY)) {
             Phone phone = getPhone(user.getChatId());
             phone.setMemory(text.toLowerCase());
             phoneService.savePhone(phone);
@@ -125,8 +124,7 @@ public class UpdateController {
             setView(sendMessage);
             user.setStep(TelegramUserStep.ENTER_PHONE_YEAR);
             userService.saveUser(user);
-        }
-        else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_YEAR)) {
+        } else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_YEAR)) {
             Phone phone = getPhone(user.getChatId());
             phone.setYear(text.toLowerCase());
             phoneService.savePhone(phone);
@@ -135,8 +133,7 @@ public class UpdateController {
             setView(sendMessage);
             user.setStep(TelegramUserStep.ENTER_PHONE_COLOR);
             userService.saveUser(user);
-        }
-        else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_COLOR)) {
+        } else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_COLOR)) {
             Phone phone = getPhone(user.getChatId());
             phone.setColor(text.toLowerCase());
             phoneService.savePhone(phone);
@@ -146,8 +143,7 @@ public class UpdateController {
             setView(sendMessage);
             user.setStep(TelegramUserStep.ENTER_PHONE_HAS_DOC);
             userService.saveUser(user);
-        }
-        else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_CONDITION)) {
+        } else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_CONDITION)) {
             Phone phone = getPhone(user.getChatId());
             phone.setCondition(text.toLowerCase());
             phoneService.savePhone(phone);
@@ -156,8 +152,7 @@ public class UpdateController {
             setView(sendMessage);
             user.setStep(TelegramUserStep.ENTER_PHONE_CHARGE);
             userService.saveUser(user);
-        }
-        else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_CHARGE)) {
+        } else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_CHARGE)) {
             Phone phone = getPhone(user.getChatId());
             phone.setCharge(text.toLowerCase());
             phoneService.savePhone(phone);
@@ -167,8 +162,7 @@ public class UpdateController {
             setView(sendMessage);
             user.setStep(TelegramUserStep.ENTER_PHONE_IS_REPLACE);
             userService.saveUser(user);
-        }
-        else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_PRICE)) {
+        } else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_PRICE)) {
             Phone phone = getPhone(user.getChatId());
             phone.setPrice(text.toLowerCase());
             phoneService.savePhone(phone);
@@ -177,33 +171,63 @@ public class UpdateController {
             setView(sendMessage);
             user.setStep(TelegramUserStep.ENTER_PHONE_ADDRESS);
             userService.saveUser(user);
-        }
-        else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_ADDRESS)) {
+        } else if (user.getStep().equals(TelegramUserStep.ENTER_PHONE_ADDRESS)) {
             Phone phone = getPhone(user.getChatId());
             phone.setAddress(text);
             phoneService.savePhone(phone);
-            var sendMessage = messageUtils.generateSendMessageWithText(message.getChatId(), "<b>Davom etamiz!</b>\n" +
-                    "\uD83D\uDCDE Xaridorlar uchun quyidagi tugma orqali kontaktingizni ulashing \uD83D\uDC47");
+            var sendMessage = messageUtils.generateSendMessageWithText(message.getChatId(), """
+                    <b>Davom etamiz!</b>
+                    \uD83D\uDCDE Xaridorlar uchun telefon raqamingizni pastdagi tugma orqali yoki yozma ravishda yuboring!
+
+                    <b>+998901234567 formatida bo'lishi kerak!</b>""");
             sendMessage.setReplyMarkup(null);
             sendMessage.setReplyMarkup(ReplyMarkupUtil.createUserContactMarkup());
             setView(sendMessage);
             user.setStep(TelegramUserStep.ENTER_OWNER_PHONE_NUMBER);
             userService.saveUser(user);
-        }
-        else if (user.getStep().equals(TelegramUserStep.ADMIN_FULL_ACCESS)) {
+        } else if (user.getStep().equals(TelegramUserStep.ENTER_OWNER_PHONE_NUMBER)) {
+            // enter phone owner number
+            Phone phone = getPhone(user.getChatId());
+            if (validPhoneNumber(text)) {
+                String phoneNumber = text.replace("+", "");
+                phone.setOwnerContact(phoneNumber);
+                phoneService.savePhone(phone);
+                var sendMessage = messageUtils.generateSendMessageWithText(message.getChatId(), "<b>Oxirgi bosqich!</b>\n" +
+                        "\uD83D\uDDBC Telefon rasmini yuboring(faqat bitta rasm):");
+                ReplyKeyboardRemove keyboardRemove = new ReplyKeyboardRemove();
+                keyboardRemove.setRemoveKeyboard(true);
+                sendMessage.setReplyMarkup(keyboardRemove);
+                setView(sendMessage);
+                user.setStep(TelegramUserStep.ENTER_PHONE_IMAGE);
+                userService.saveUser(user);
+            } else {
+                var sendMessage = messageUtils.generateSendMessageWithText(message.getChatId(), """
+                    <b>Noto'g'ri telefon raqam formati!</b>
+                    \uD83D\uDCDE Iltimos telefon raqamingizni pastdagi tugma orqali yoki yozma ravishda yuboring!
+
+                    <b>+998901234567 formatida bo'lishi kerak!</b>""");
+                sendMessage.setReplyMarkup(null);
+                sendMessage.setReplyMarkup(ReplyMarkupUtil.createUserContactMarkup());
+                setView(sendMessage);
+            }
+        } else if (user.getStep().equals(TelegramUserStep.ADMIN_FULL_ACCESS)) {
             if (text.equals("\uD83D\uDDD3 Oylik hisobot")) {
                 List<Phone> phonesForCurrentMonth = phoneService.getPhonesForCurrentMonth();
                 String report = createReport(phonesForCurrentMonth);
                 var sendMessage = messageUtils.generateSendMessageWithText(telegramBot.getBotModeratorId(), report);
                 setView(sendMessage);
-            }
-            else if (text.equals("\uD83D\uDCCA Kanal statistikasi")) {
+            } else if (text.equals("\uD83D\uDCCA Kanal statistikasi")) {
                 String caption = "<b>" + user.getFullName() + "</b> akajon!\nKanalimizning statistikasini quyidagi link orqali ko'rishingiz mumkin:\n\uD83D\uDC47\uD83D\uDC47\uD83D\uDC47\nhttps://uz.tgstat.com/channel/@BuxorodaTelefonBozor/stat";
                 var sendMessage = messageUtils.generateSendMessageWithText(telegramBot.getBotModeratorId(), caption);
                 setView(sendMessage);
             }
         }
 
+    }
+
+    private boolean validPhoneNumber(String text) {
+        String phoneNumberRegex = "^\\+998\\d{9}$"; // +998901234567 formatiga mos keladigan regex
+        return text.matches(phoneNumberRegex);
     }
 
     private String createReport(List<Phone> phones) {
@@ -373,7 +397,6 @@ public class UpdateController {
                 user.setStep(TelegramUserStep.SEND_POST_TO_ADMIN_FOR_PUBLISH);
                 userService.saveUser(user);
             }
-
         }
     }
 
@@ -445,6 +468,6 @@ public class UpdateController {
                 "Qo'llab-quvvatlanmaydigan xabar turi..."
         );
         setView(sendMessage);
-        log.error("processUnsupportedMessage() | " + update.getMessage().getFrom().getId() + " | isBot:" + update.getMessage().getFrom().getIsBot());
     }
+
 }
